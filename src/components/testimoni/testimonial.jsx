@@ -6,34 +6,39 @@ import "slick-carousel/slick/slick-theme.css";
 
 const Testimonial = () => {
   const [userData, setUserData] = useState([]);
-  const fetchData =  async() => {
+  const fetchData = async () => {
     try {
-      const testimoniResponse = await axios.get("http://195.35.8.190:4000/api/testimoni");
+      const testimoniResponse = await axios.get(
+        "http://195.35.8.190:4000/api/testimoni",
+        { fetchPolicy: "no-cors" }
+      );
       const testimoni = testimoniResponse.data.data;
 
-      const userResponse = await axios.get("http://195.35.8.190:4000/api/users");
+      const userResponse = await axios.get(
+        "http://195.35.8.190:4000/api/users"
+      );
       const users = userResponse.data.data;
 
       const viewedData = testimoni.map((item) => {
         const user = users.find((u) => u.id === item.userId);
-          return {
-            id: item.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            image: user.image,
-            rating: item.rating,            
-            message: item.message,
-          }
+        return {
+          id: item.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          image: user.image,
+          rating: item.rating,
+          message: item.message,
+        };
       });
       setUserData(viewedData);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     fetchData();
-  }, [])
+  }, []);
 
   const settings = {
     dots: true,
@@ -62,7 +67,9 @@ const Testimonial = () => {
                   className="w-32 rounded-full shadow-lg dark:shadow-black/30"
                 />
               </div>
-              <h5 className="mb-4 text-xl font-semibold">{testimonial.firstName} {testimonial.lastName}</h5>
+              <h5 className="mb-4 text-xl font-semibold">
+                {testimonial.firstName} {testimonial.lastName}
+              </h5>
               <p className="mb-4">{testimonial.message}</p>
               <ul className="flex items-center justify-center">
                 {[...Array(testimonial.rating)].map((_, index) => (
